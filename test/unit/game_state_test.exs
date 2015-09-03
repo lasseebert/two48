@@ -60,7 +60,21 @@ defmodule GameStateTest do
   end
 
   # Pending
-  test "it has variable size", do: "pending"
+  test "it has variable size" do
+    state = GameState.new(5)
+            |> GameState.set({1, 1}, 2)
+            |> GameState.set({2, 2}, 4)
+            |> GameState.set({3, 3}, 8)
+            |> GameState.move(:left)
+            |> GameState.move(:down)
+            |> GameState.move(:right)
+            |> GameState.move(:up)
+
+    assert GameState.get(state, {0, 4}) == 2
+    assert GameState.get(state, {1, 4}) == 4
+    assert GameState.get(state, {2, 4}) == 8
+  end
+
   test "it is not game over", do: "pending"
   test "it is game over", do: "pending"
 end

@@ -1,11 +1,15 @@
 defmodule Two48.GameState do
   defstruct(
-    board: List.duplicate(nil, 4) |> List.duplicate(4),
-    score: 0
+    board: nil,
+    score: 0,
+    size: nil
   )
 
-  def new do
-    %Two48.GameState{}
+  def new(size \\ 4) do
+    %Two48.GameState{
+      board: List.duplicate(nil, size) |> List.duplicate(size),
+      size: size
+    }
   end
 
   def set(state, {row_index, column_index}, value) do
@@ -44,7 +48,7 @@ defmodule Two48.GameState do
         index  = Enum.at(empty_fields, :random.uniform(num_empty_fields) - 1)
         number = Enum.at([2, 4], :random.uniform(2) - 1)
 
-        set(state, {div(index, 4), rem(index, 4)}, number)
+        set(state, {div(index, state.size), rem(index, state.size)}, number)
     end
   end
 
@@ -89,11 +93,13 @@ defmodule Two48.GameState do
   end
 
   defp move_row_left(row) do
-    { row, score } = row
-                      |> remove_nils
-                      |> merge
+    size = length(row)
+    {row, score} = row
+                    |> remove_nils
+                    |> merge
 
-    row = fill_nils_right(row)
+    row = fill_nils_right(row, size - length(row))
+
     {row, score}
   end
 
@@ -103,10 +109,12 @@ defmodule Two48.GameState do
 
   defp merge(list), do: merge(list, [], 0)
   defp merge([], result, score), do: {Enum.reverse(result), score}
-  defp merge([a, a | tail], result, score), do: merge(tail, [a * 2 | result], score + a * 2)
-  defp merge([a | tail], result, score), do: merge(tail, [a | result], score)
+  defp merge([a, a | tail], result, score) do
+    merge(tail, [a * 2 | result], score + a * 2)
+  end
+  defp merge([a | tail], result, score) do
+    merge(tail, [a | result], score)
+  end
 
-  defp fill_nils_right(list), do: fill_nils_right(Enum.reverse(list), 4 - length(list))
-  defp fill_nils_right(list, 0), do: Enum.reverse(list)
-  defp fill_nils_right(list, n), do: fill_nils_right([nil | list], n - 1)
+  defp fill_nils_right(list, n), do: list ++ List.duplicate(nil, n)
 end
