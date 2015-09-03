@@ -29,6 +29,25 @@ defmodule Two48.GameState do
     |> move_transform_after(direction)
   end
 
+  def place_random_number(state) do
+    empty_fields = state.board
+    |> List.flatten
+    |> Enum.with_index
+    |> Enum.reject(fn {value, _index} -> value end)
+    |> Enum.map(fn {_value, index} -> index end)
+
+    num_empty_fields = length(empty_fields)
+    case num_empty_fields do
+      0 -> state
+      _ ->
+        :random.seed(:erlang.now)
+        index  = Enum.at(empty_fields, :random.uniform(num_empty_fields) - 1)
+        number = Enum.at([2, 4], :random.uniform(2) - 1)
+
+        set(state, {div(index, 4), rem(index, 4)}, number)
+    end
+  end
+
   defp move_transform_before(state, :left),  do: state
   defp move_transform_before(state, :right), do: state |> mirror
   defp move_transform_before(state, :up),    do: state |> rotate_left
@@ -90,5 +109,4 @@ defmodule Two48.GameState do
   defp fill_nils_right(list), do: fill_nils_right(Enum.reverse(list), 4 - length(list))
   defp fill_nils_right(list, 0), do: Enum.reverse(list)
   defp fill_nils_right(list, n), do: fill_nils_right([nil | list], n - 1)
-
 end

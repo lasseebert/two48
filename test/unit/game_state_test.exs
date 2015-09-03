@@ -6,6 +6,7 @@ defmodule GameStateTest do
   @board_2 @board_1 |> GameState.set({2, 0}, 2)
   @board_3 @board_2 |> GameState.set({2, 1}, 2)
 
+  # Get and set
   test "it can set and get a spcific field" do
     field = GameState.new
             |> GameState.set({0, 3}, 32)
@@ -13,6 +14,7 @@ defmodule GameStateTest do
     assert field == 32
   end
 
+  # Move
   test "it moves a number left" do
     state = @board_1 |> GameState.move(:left)
     assert state |> GameState.get({2, 0}) == 2
@@ -48,4 +50,17 @@ defmodule GameStateTest do
     state = @board_2 |> GameState.move(:left)
     assert state.score == 4
   end
+
+  # place_random_number
+  test "it adds a random number" do
+    state = GameState.new |> GameState.place_random_number
+    [number | []] = state.board |> List.flatten |> Enum.filter(&(&1))
+
+    assert number in [2, 4]
+  end
+
+  # Pending
+  test "it has variable size", do: "pending"
+  test "it is not game over", do: "pending"
+  test "it is game over", do: "pending"
 end
