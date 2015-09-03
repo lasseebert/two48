@@ -2,10 +2,19 @@ defmodule Two48.GameState do
   defstruct board: List.duplicate(nil, 4) |> List.duplicate(4)
 
   def move_left(state) do
-    board = move_rows_left(state.board, [])
+    board = move_rows_left(state.board)
     %{ state | board: board }
   end
 
+  def move_right(state) do
+    board = state.board
+            |> Enum.map(&Enum.reverse/1)
+            |> move_rows_left
+            |> Enum.map(&Enum.reverse/1)
+    %{ state | board: board }
+  end
+
+  defp move_rows_left(list), do: move_rows_left(list, [])
   defp move_rows_left([], acc), do: Enum.reverse(acc)
   defp move_rows_left([head | tail], acc) do
     move_rows_left(tail, [move_row_left(head) | acc])
