@@ -5,6 +5,10 @@ defmodule Two48 do
   # for more information on OTP Applications
   def start(_type, _args) do
     IO.puts "Starting Two48 application"
+
+    # Seed random on start
+    :random.seed(:erlang.monotonic_time, :erlang.time_offset, :erlang.unique_integer)
+
     import Supervisor.Spec, warn: false
 
     children = [

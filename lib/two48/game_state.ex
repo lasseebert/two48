@@ -1,9 +1,5 @@
 defmodule Two48.GameState do
-  defstruct(
-    board: nil,
-    score: 0,
-    size: nil
-  )
+  defstruct board: nil, score: 0, size: nil
 
   def new(size \\ 4) do
     %Two48.GameState{
@@ -13,7 +9,6 @@ defmodule Two48.GameState do
   end
 
   def set(state, {row_index, column_index}, value) do
-    board = state.board
     row = state.board |> Enum.at(row_index)
                       |> List.replace_at(column_index, value)
     board = state.board |> List.replace_at(row_index, row)
@@ -32,9 +27,9 @@ defmodule Two48.GameState do
 
   def move(state, direction) do
     state
-    |> move_transform_before(direction)
+    |> move_transform(:before, direction)
     |> move_left
-    |> move_transform_after(direction)
+    |> move_transform(:after, direction)
   end
 
   def game_over?(state) do
@@ -53,7 +48,6 @@ defmodule Two48.GameState do
     case num_empty_fields do
       0 -> state
       _ ->
-        :random.seed(:erlang.now)
         index  = Enum.at(empty_fields, :random.uniform(num_empty_fields) - 1)
         number = Enum.at([2, 4], :random.uniform(2) - 1)
 
@@ -61,15 +55,12 @@ defmodule Two48.GameState do
     end
   end
 
-  defp move_transform_before(state, :left),  do: state
-  defp move_transform_before(state, :right), do: state |> mirror
-  defp move_transform_before(state, :up),    do: state |> rotate_left
-  defp move_transform_before(state, :down),  do: state |> rotate_right
-
-  defp move_transform_after(state, :left),  do: state
-  defp move_transform_after(state, :right), do: state |> mirror
-  defp move_transform_after(state, :up),    do: state |> rotate_right
-  defp move_transform_after(state, :down),  do: state |> rotate_left
+  defp move_transform(state, _,       :left),  do: state
+  defp move_transform(state, _,       :right), do: state |> mirror
+  defp move_transform(state, :before, :up),    do: state |> rotate_left
+  defp move_transform(state, :after,  :up),    do: state |> rotate_right
+  defp move_transform(state, :before, :down),  do: state |> rotate_right
+  defp move_transform(state, :after,  :down),  do: state |> rotate_left
 
   defp move_left(state) do
     {board, score} = state.board |> move_rows_left([], state.score)
@@ -83,16 +74,17 @@ defmodule Two48.GameState do
   defp rotate_left(state), do: %{state | board: state.board |> rotate_left([])}
   defp rotate_left([[] | _tail], result), do: result
   defp rotate_left(matrix, result) do
-    row = matrix |> Enum.map(&hd/1)
+    row    = matrix |> Enum.map(&hd/1)
     matrix = matrix |> Enum.map(&tl/1)
     rotate_left(matrix, [row | result])
   end
 
   defp rotate_right(state) do
-    state
-    |> rotate_left
-    |> rotate_left
-    |> rotate_left
+    %{board: board} = rotate_left(state)
+    board = board
+            |> Enum.reverse
+            |> Enum.map(&Enum.reverse/1)
+    %{state | board: board}
   end
 
   defp move_rows_left([], result, score), do: { Enum.reverse(result), score }
@@ -125,5 +117,7 @@ defmodule Two48.GameState do
     merge(tail, [a | result], score)
   end
 
-  defp fill_nils_right(list, n), do: list ++ List.duplicate(nil, n)
+  defp fill_nils_right(list, n) do
+    list ++ List.duplicate(nil, n)
+  end
 end
