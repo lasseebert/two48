@@ -14,6 +14,22 @@ defmodule Two48.GameState do
     %{ state | board: board }
   end
 
+  def move_up(state) do
+    board = state.board
+            |> rotate_left
+            |> move_rows_left
+            |> rotate_right
+    %{ state | board: board }
+  end
+
+  def move_down(state) do
+    board = state.board
+            |> rotate_right
+            |> move_rows_left
+            |> rotate_left
+    %{ state | board: board }
+  end
+
   defp move_rows_left(list), do: move_rows_left(list, [])
   defp move_rows_left([], acc), do: Enum.reverse(acc)
   defp move_rows_left([head | tail], acc) do
@@ -39,4 +55,19 @@ defmodule Two48.GameState do
   defp fill_nils_right(list), do: fill_nils_right(Enum.reverse(list), 4 - length(list))
   defp fill_nils_right(list, 0), do: Enum.reverse(list)
   defp fill_nils_right(list, n), do: fill_nils_right([nil | list], n - 1)
+
+  defp rotate_left(matrix), do: rotate_left(matrix, [])
+  defp rotate_left([[] | tail], result), do: result
+  defp rotate_left(matrix, result) do
+    row = matrix |> Enum.map(&hd/1)
+    matrix = matrix |> Enum.map(&tl/1)
+    rotate_left(matrix, [row | result])
+  end
+
+  defp rotate_right(matrix) do
+    matrix
+    |> rotate_left
+    |> rotate_left
+    |> rotate_left
+  end
 end
