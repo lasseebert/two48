@@ -29,6 +29,11 @@ defmodule GameStateTest do
     ]
   }
 
+  test "it can set and get a spcific field" do
+    field = GameState.new |> GameState.set({0, 3}, 32) |> GameState.get({0, 3})
+    assert field == 32
+  end
+
   test "it moves a number left" do
     state = @board_1 |> GameState.move(:left)
     assert state.board |> List.flatten == [nil, nil, nil, nil, nil, nil, nil, nil, 2, nil, nil, nil, nil, nil, nil, nil]
