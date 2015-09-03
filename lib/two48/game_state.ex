@@ -1,56 +1,66 @@
 defmodule Two48.GameState do
-  defstruct board: List.duplicate(nil, 4) |> List.duplicate(4)
+  defstruct(
+    board: List.duplicate(nil, 4) |> List.duplicate(4),
+    score: 0
+  )
+
+  def new do
+    %Two48.GameState{}
+  end
 
   def move_left(state) do
-    board = move_rows_left(state.board)
-    %{ state | board: board }
+    {board, score} = move_rows_left(state.board)
+    %{ state | board: board, score: state.score + score }
   end
 
   def move_right(state) do
-    board = state.board
+    {board, score} = state.board
             |> Enum.map(&Enum.reverse/1)
             |> move_rows_left
-            |> Enum.map(&Enum.reverse/1)
-    %{ state | board: board }
+    board = board |> Enum.map(&Enum.reverse/1)
+    %{ state | board: board, score: state.score + score }
   end
 
   def move_up(state) do
-    board = state.board
+    {board, score} = state.board
             |> rotate_left
             |> move_rows_left
-            |> rotate_right
-    %{ state | board: board }
+    board = board |> rotate_right
+    %{ state | board: board, score: state.score + score }
   end
 
   def move_down(state) do
-    board = state.board
+    {board, score} = state.board
             |> rotate_right
             |> move_rows_left
-            |> rotate_left
-    %{ state | board: board }
+    board = board |> rotate_left
+    %{ state | board: board, score: state.score + score }
   end
 
-  defp move_rows_left(list), do: move_rows_left(list, [])
-  defp move_rows_left([], acc), do: Enum.reverse(acc)
-  defp move_rows_left([head | tail], acc) do
-    move_rows_left(tail, [move_row_left(head) | acc])
+  defp move_rows_left(list), do: move_rows_left(list, [], 0)
+  defp move_rows_left([], result, score), do: { Enum.reverse(result), score }
+  defp move_rows_left([head | tail], result, score) do
+    {row, new_score} = move_row_left(head)
+    move_rows_left(tail, [row | result], score + new_score)
   end
 
   defp move_row_left(row) do
-    row
+    { row, score } = row
     |> remove_nils
     |> merge
-    |> fill_nils_right
+
+    row = fill_nils_right(row)
+    {row, score}
   end
 
   defp remove_nils(list) do
     Enum.filter(list, &(&1))
   end
 
-  defp merge(list), do: merge(list, [])
-  defp merge([], acc), do: Enum.reverse(acc)
-  defp merge([a, a | tail], acc), do: merge(tail, [a * 2 | acc])
-  defp merge([a | tail], acc), do: merge(tail, [a | acc])
+  defp merge(list), do: merge(list, [], 0)
+  defp merge([], result, score), do: {Enum.reverse(result), score}
+  defp merge([a, a | tail], result, score), do: merge(tail, [a * 2 | result], score + a * 2)
+  defp merge([a | tail], result, score), do: merge(tail, [a | result], score)
 
   defp fill_nils_right(list), do: fill_nils_right(Enum.reverse(list), 4 - length(list))
   defp fill_nils_right(list, 0), do: Enum.reverse(list)

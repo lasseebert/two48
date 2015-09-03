@@ -59,8 +59,8 @@ defmodule GameStateTest do
     assert state.board |> List.flatten == [nil, nil, nil, nil, nil, nil, nil, nil, 4, 2, nil, nil, nil, nil, nil, nil]
   end
 
-  #test "it adds to score when merging" do
-  #  state = @board_2 |> GameState.move_left
-  #  assert state.score == 4
-  #end
+  test "it adds to score when merging" do
+    state = @board_2 |> GameState.move_left
+    assert state.score == 4
+  end
 end
