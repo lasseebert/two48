@@ -30,37 +30,37 @@ defmodule GameStateTest do
   }
 
   test "it moves a number left" do
-    state = @board_1 |> GameState.move_left
+    state = @board_1 |> GameState.move(:left)
     assert state.board |> List.flatten == [nil, nil, nil, nil, nil, nil, nil, nil, 2, nil, nil, nil, nil, nil, nil, nil]
   end
 
   test "it moves a number right" do
-    state = @board_1 |> GameState.move_right
+    state = @board_1 |> GameState.move(:right)
     assert state.board |> List.flatten == [nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 2, nil, nil, nil, nil]
   end
 
   test "it moves a number up" do
-    state = @board_1 |> GameState.move_up
+    state = @board_1 |> GameState.move(:up)
     assert state.board |> List.flatten == [nil, nil, 2, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil]
   end
 
   test "it moves a number down" do
-    state = @board_1 |> GameState.move_down
+    state = @board_1 |> GameState.move(:down)
     assert state.board |> List.flatten == [nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, 2, nil]
   end
 
   test "it merges two numbers" do
-    state = @board_2 |> GameState.move_left
+    state = @board_2 |> GameState.move(:left)
     assert state.board |> List.flatten == [nil, nil, nil, nil, nil, nil, nil, nil, 4, nil, nil, nil, nil, nil, nil, nil]
   end
 
   test "it merges the right numbers" do
-    state = @board_3 |> GameState.move_left
+    state = @board_3 |> GameState.move(:left)
     assert state.board |> List.flatten == [nil, nil, nil, nil, nil, nil, nil, nil, 4, 2, nil, nil, nil, nil, nil, nil]
   end
 
   test "it adds to score when merging" do
-    state = @board_2 |> GameState.move_left
+    state = @board_2 |> GameState.move(:left)
     assert state.score == 4
   end
 end

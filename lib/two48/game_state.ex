@@ -8,36 +8,27 @@ defmodule Two48.GameState do
     %Two48.GameState{}
   end
 
-  def move_left(state) do
-    {board, score} = move_rows_left(state.board)
-    %{ state | board: board, score: state.score + score }
+  def move(state, direction) do
+    state
+    |> move_transform_before(direction)
+    |> move_left
+    |> move_transform_after(direction)
   end
 
-  def move_right(state) do
-    {board, score} = state.board
-            |> Enum.map(&Enum.reverse/1)
-            |> move_rows_left
-    board = board |> Enum.map(&Enum.reverse/1)
-    %{ state | board: board, score: state.score + score }
-  end
+  defp move_transform_before(state, :left),  do: state
+  defp move_transform_before(state, :right), do: state |> mirror
+  defp move_transform_before(state, :up),    do: state |> rotate_left
+  defp move_transform_before(state, :down),  do: state |> rotate_right
 
-  def move_up(state) do
-    {board, score} = state.board
-            |> rotate_left
-            |> move_rows_left
-    board = board |> rotate_right
-    %{ state | board: board, score: state.score + score }
-  end
+  defp move_transform_after(state, :left),  do: state
+  defp move_transform_after(state, :right), do: state |> mirror
+  defp move_transform_after(state, :up),    do: state |> rotate_right
+  defp move_transform_after(state, :down),  do: state |> rotate_left
 
-  def move_down(state) do
-    {board, score} = state.board
-            |> rotate_right
-            |> move_rows_left
-    board = board |> rotate_left
-    %{ state | board: board, score: state.score + score }
+  defp move_left(state) do
+    {board, score} = state.board |> move_rows_left([], state.score)
+    %{state | board: board, score: score}
   end
-
-  defp move_rows_left(list), do: move_rows_left(list, [], 0)
   defp move_rows_left([], result, score), do: { Enum.reverse(result), score }
   defp move_rows_left([head | tail], result, score) do
     {row, new_score} = move_row_left(head)
@@ -66,16 +57,20 @@ defmodule Two48.GameState do
   defp fill_nils_right(list, 0), do: Enum.reverse(list)
   defp fill_nils_right(list, n), do: fill_nils_right([nil | list], n - 1)
 
-  defp rotate_left(matrix), do: rotate_left(matrix, [])
-  defp rotate_left([[] | tail], result), do: result
+  defp mirror(state) do
+    %{state | board: state.board |> Enum.map(&Enum.reverse/1)}
+  end
+
+  defp rotate_left(state), do: %{state | board: state.board |> rotate_left([])}
+  defp rotate_left([[] | _tail], result), do: result
   defp rotate_left(matrix, result) do
     row = matrix |> Enum.map(&hd/1)
     matrix = matrix |> Enum.map(&tl/1)
     rotate_left(matrix, [row | result])
   end
 
-  defp rotate_right(matrix) do
-    matrix
+  defp rotate_right(state) do
+    state
     |> rotate_left
     |> rotate_left
     |> rotate_left
