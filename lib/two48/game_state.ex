@@ -26,11 +26,20 @@ defmodule Two48.GameState do
     |> Enum.at(column_index)
   end
 
+  def can_move?(state, direction) do
+    state != move(state, direction)
+  end
+
   def move(state, direction) do
     state
     |> move_transform_before(direction)
     |> move_left
     |> move_transform_after(direction)
+  end
+
+  def game_over?(state) do
+    [:left, :right, :up, :down]
+    |> Enum.all?(fn direction -> !can_move?(state, direction) end)
   end
 
   def place_random_number(state) do

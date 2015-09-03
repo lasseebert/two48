@@ -59,7 +59,7 @@ defmodule GameStateTest do
     assert number in [2, 4]
   end
 
-  # Pending
+  # Size
   test "it has variable size" do
     state = GameState.new(5)
             |> GameState.set({1, 1}, 2)
@@ -75,6 +75,31 @@ defmodule GameStateTest do
     assert GameState.get(state, {2, 4}) == 8
   end
 
-  test "it is not game over", do: "pending"
-  test "it is game over", do: "pending"
+  # Game over
+  test "it can move left" do
+    state = GameState.new |> GameState.set({1, 1}, 2)
+    assert GameState.can_move?(state, :left)
+  end
+
+  test "it can not move left" do
+    state = GameState.new |> GameState.set({1, 0}, 2)
+    refute GameState.can_move?(state, :left)
+  end
+
+  test "it is not game over" do
+    state = GameState.new |> GameState.set({1, 0}, 2)
+    refute GameState.game_over?(state)
+  end
+
+  test "it is game over" do
+    board = [
+      [2, 4, 2, 4],
+      [4, 2, 4, 2],
+      [2, 4, 2, 4],
+      [4, 2, 4, 2]
+    ]
+    state = %{GameState.new | board: board}
+
+    assert GameState.game_over?(state)
+  end
 end
