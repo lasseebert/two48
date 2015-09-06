@@ -3,15 +3,14 @@ defmodule Two48.GameState do
   Functions to manipulate gamestate
   """
 
-  defstruct board: nil, score: 0, size: nil
+  defstruct board: nil, score: 0
 
   @doc"""
   Creates a new empty gamestate
   """
   def new(size \\ 4) do
     %Two48.GameState{
-      board: List.duplicate(nil, size) |> List.duplicate(size),
-      size: size
+      board: List.duplicate(nil, size) |> List.duplicate(size)
     }
   end
 
@@ -75,9 +74,17 @@ defmodule Two48.GameState do
       _ ->
         index  = Enum.at(empty_fields, :random.uniform(num_empty_fields) - 1)
         number = if :random.uniform < 0.9, do: 2, else: 4
+        size = size(state)
 
-        set(state, {div(index, state.size), rem(index, state.size)}, number)
+        set(state, {div(index, size), rem(index, size)}, number)
     end
+  end
+
+  @doc """
+  Returns the size of one dimension of the board
+  """
+  def size(state) do
+    length state.board
   end
 
   defp move_transform(state, _,       :left),  do: state
