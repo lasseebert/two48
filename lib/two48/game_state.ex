@@ -74,7 +74,7 @@ defmodule Two48.GameState do
       0 -> state
       _ ->
         index  = Enum.at(empty_fields, :random.uniform(num_empty_fields) - 1)
-        number = Enum.at([2, 4], :random.uniform(2) - 1)
+        number = if :random.uniform < 0.9, do: 2, else: 4
 
         set(state, {div(index, state.size), rem(index, state.size)}, number)
     end
