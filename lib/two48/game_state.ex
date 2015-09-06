@@ -1,6 +1,13 @@
 defmodule Two48.GameState do
+  @moduledoc """
+  Functions to manipulate gamestate
+  """
+
   defstruct board: nil, score: 0, size: nil
 
+  @doc"""
+  Creates a new empty gamestate
+  """
   def new(size \\ 4) do
     %Two48.GameState{
       board: List.duplicate(nil, size) |> List.duplicate(size),
@@ -8,6 +15,9 @@ defmodule Two48.GameState do
     }
   end
 
+  @doc """
+  Sets a number on the board to the given value
+  """
   def set(state, {row_index, column_index}, value) do
     row = state.board |> Enum.at(row_index)
                       |> List.replace_at(column_index, value)
@@ -15,16 +25,25 @@ defmodule Two48.GameState do
     %{state | board: board}
   end
 
+  @doc """
+  Gets a number from the board
+  """
   def get(state, {row_index, column_index}) do
     state.board
     |> Enum.at(row_index)
     |> Enum.at(column_index)
   end
 
+  @doc """
+  Answers if the given move can be made
+  """
   def can_move?(state, direction) do
     state != move(state, direction)
   end
 
+  @doc """
+  Move in the given direction
+  """
   def move(state, direction) do
     state
     |> move_transform(:before, direction)
@@ -32,11 +51,17 @@ defmodule Two48.GameState do
     |> move_transform(:after, direction)
   end
 
+  @doc """
+  True if no more moves can be made
+  """
   def game_over?(state) do
     [:left, :right, :up, :down]
     |> Enum.all?(fn direction -> !can_move?(state, direction) end)
   end
 
+  @doc """
+  Places a 2 or 4 on a random tile
+  """
   def place_random_number(state) do
     empty_fields = state.board
     |> List.flatten
