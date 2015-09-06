@@ -1,4 +1,4 @@
-defmodule GameStateTest do
+defmodule Two48.GameStateTest do
   use ExUnit.Case
   alias Two48.GameState
 

@@ -87,6 +87,13 @@ defmodule Two48.GameState do
     length state.board
   end
 
+  @doc """
+  Returns the board as a two dimensional list
+  """
+  def board(state) do
+    state.board
+  end
+
   defp move_transform(state, _,       :left),  do: state
   defp move_transform(state, _,       :right), do: state |> mirror
   defp move_transform(state, :before, :up),    do: state |> rotate_left
