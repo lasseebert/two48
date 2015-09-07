@@ -160,3 +160,50 @@ defmodule Two48.GameState do
     list ++ List.duplicate(nil, n)
   end
 end
+
+defimpl Inspect, for: Two48.GameState do
+  alias Two48.GameState
+
+  def inspect(state, _opts) do
+    size = state |> GameState.size
+    max_digits = 5
+
+    inspect_rows(state.board, max_digits)
+    |> wrap(delimiter(size, max_digits), " Score: #{state.score}\n")
+  end
+
+  def inspect_rows(rows, max_digits) do
+    rows
+    |> Enum.map(&(inspect_row(&1, max_digits)))
+  end
+
+  def inspect_row(tiles, max_digits) do
+    tiles
+    |> Enum.map(&(inspect_tile(&1, max_digits)))
+    |> wrap("|", "\n")
+  end
+
+  def inspect_tile(nil, max_digits) do
+    pad("", max_digits)
+  end
+  def inspect_tile(number, max_digits) do
+    number
+    |> Integer.to_string
+    |> pad(max_digits)
+  end
+
+  def wrap(subjects, delimiter, postfix \\ "") do
+    delimiter <> Enum.join(subjects, delimiter) <> delimiter <> postfix
+  end
+
+  def pad(subject, length) do
+    pad_length = length - String.length(subject)
+    subject
+    |> String.rjust(String.length(subject) + div(pad_length, 2) + rem(pad_length, 2))
+    |> String.ljust(length)
+  end
+
+  def delimiter(size, max_digits) do
+    wrap(String.duplicate("-", max_digits) |> List.duplicate(size), "|", "\n")
+  end
+end

@@ -32,8 +32,4 @@ defmodule Two48.GameTest do
     assert {:error, :illegal_move} = Game.move(game, :left)
     assert game |> numbers |> length == 0
   end
-
-  test "seed seems wrong" do
-    assert false
-  end
 end

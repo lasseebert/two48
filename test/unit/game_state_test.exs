@@ -102,4 +102,29 @@ defmodule Two48.GameStateTest do
 
     assert GameState.game_over?(state)
   end
+
+  test "it inspects nicely" do
+    board = [
+      [2, 4, 8, 16],
+      [32, 64, 128, 256],
+      [512, 1024, 2048, 4096],
+      [8192, 16384, 32768, nil]
+    ]
+    state = %{GameState.new | board: board, score: 1234}
+
+    expected = """
+    |-----|-----|-----|-----|
+    |  2  |  4  |  8  |  16 |
+    |-----|-----|-----|-----|
+    |  32 |  64 | 128 | 256 |
+    |-----|-----|-----|-----|
+    | 512 | 1024| 2048| 4096|
+    |-----|-----|-----|-----|
+    | 8192|16384|32768|     |
+    |-----|-----|-----|-----|
+     Score: 1234
+    """
+
+    assert state |> inspect == expected
+  end
 end
