@@ -3,7 +3,7 @@ defmodule Two48.Game do
   alias Two48.GameState
 
   def start_link(state \\ initial_state) do
-    GenServer.start_link(__MODULE__, state)
+    GenServer.start_link(__MODULE__, [state])
   end
 
   def state(game) do
@@ -14,8 +14,8 @@ defmodule Two48.Game do
     GenServer.call(game, {:move, direction})
   end
 
-  def init(args) do
-    {:ok, args}
+  def init([state]) do
+    {:ok, state}
   end
 
   def handle_call(:state, _from, state) do
