@@ -23,7 +23,7 @@ defmodule Two48.Cli do
           |> String.strip
           |> direction
 
-    {ok, _} = Game.move(game, dir)
+    {:ok, _} = Game.move(game, dir)
     game
   end
 

@@ -5,15 +5,6 @@
 # is restricted to this project.
 use Mix.Config
 
-# Configures the endpoint
-config :two48, Two48.Endpoint,
-  url: [host: "localhost"],
-  root: Path.dirname(__DIR__),
-  secret_key_base: "WMoFyYoi9f/JoTpphUhH4ZIzEETBlO7VhCer/k8Cm2GRnVaBwPWg3KyIulXKSb1y",
-  render_errors: [accepts: ~w(html json)],
-  pubsub: [name: Two48.PubSub,
-           adapter: Phoenix.PubSub.PG2]
-
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
