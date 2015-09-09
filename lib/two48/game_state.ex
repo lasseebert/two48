@@ -169,7 +169,7 @@ defimpl Inspect, for: Two48.GameState do
     max_digits = 5
 
     inspect_rows(state.board, max_digits)
-    |> wrap(delimiter(size, max_digits), " Score: #{state.score}\n")
+    |> wrap(delimiter(size, max_digits), " Score: #{state.score}\r\n")
   end
 
   def inspect_rows(rows, max_digits) do
@@ -180,7 +180,7 @@ defimpl Inspect, for: Two48.GameState do
   def inspect_row(tiles, max_digits) do
     tiles
     |> Enum.map(&(inspect_tile(&1, max_digits)))
-    |> wrap("|", "\n")
+    |> wrap("|", "\r\n")
   end
 
   def inspect_tile(nil, max_digits) do
@@ -204,6 +204,6 @@ defimpl Inspect, for: Two48.GameState do
   end
 
   def delimiter(size, max_digits) do
-    wrap(String.duplicate("-", max_digits) |> List.duplicate(size), "|", "\n")
+    wrap(String.duplicate("-", max_digits) |> List.duplicate(size), "|", "\r\n")
   end
 end

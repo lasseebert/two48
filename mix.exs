@@ -41,8 +41,7 @@ defmodule Two48.Mixfile do
   defp escript do
     [
       main_module: Two48.Cli,
-      embed_elixir: true,
-      app: nil
+      emu_args: "-noinput -elixir ansi_enabled true"
     ]
   end
 end
