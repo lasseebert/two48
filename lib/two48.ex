@@ -6,9 +6,6 @@ defmodule Two48 do
   def start(_type, _args) do
     IO.puts "Starting Two48 application"
 
-    # Seed random on start
-    :random.seed(:erlang.monotonic_time, :erlang.time_offset, :erlang.unique_integer)
-
     import Supervisor.Spec, warn: false
 
     children = [

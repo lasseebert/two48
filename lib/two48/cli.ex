@@ -4,6 +4,11 @@ defmodule Two48.Cli do
   def main(_args) do
     {:ok, game} = Game.start_link
     Port.open({:spawn, "tty_sl -c -e"}, [:binary, :eof])
+
+    # Seed random on start
+    << a :: 32, b :: 32, c :: 32 >> = :crypto.rand_bytes(12)
+    :random.seed(a, b, c)
+
     loop(game)
   end
 
@@ -30,7 +35,8 @@ defmodule Two48.Cli do
   defp move(game) do
     receive do
       {_port, {:data, data}} ->
-        translate(data)
+        data
+        |> translate
         |> handle_key(game)
         :ok
       _ ->
