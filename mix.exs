@@ -10,8 +10,8 @@ defmodule Two48.Mixfile do
       compilers: Mix.compilers,
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
-      deps: deps,
-      escript: escript
+      deps: deps(),
+      escript: escript()
     ]
   end
 

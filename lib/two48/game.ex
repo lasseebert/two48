@@ -2,7 +2,7 @@ defmodule Two48.Game do
   use GenServer
   alias Two48.GameState
 
-  def start_link(state \\ initial_state) do
+  def start_link(state \\ initial_state()) do
     GenServer.start_link(__MODULE__, [state])
   end
 

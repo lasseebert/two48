@@ -199,8 +199,8 @@ defimpl Inspect, for: Two48.GameState do
   def pad(subject, length) do
     pad_length = length - String.length(subject)
     subject
-    |> String.rjust(String.length(subject) + div(pad_length, 2) + rem(pad_length, 2))
-    |> String.ljust(length)
+    |> String.pad_leading(String.length(subject) + div(pad_length, 2) + rem(pad_length, 2))
+    |> String.pad_trailing(length)
   end
 
   def delimiter(size, max_digits) do

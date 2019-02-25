@@ -6,7 +6,7 @@ defmodule Two48.Cli do
     Port.open({:spawn, "tty_sl -c -e"}, [:binary, :eof])
 
     # Seed random on start
-    << a :: 32, b :: 32, c :: 32 >> = :crypto.rand_bytes(12)
+    << a :: 32, b :: 32, c :: 32 >> = :crypto.strong_rand_bytes(12)
     :random.seed(a, b, c)
 
     loop(game)
@@ -14,7 +14,7 @@ defmodule Two48.Cli do
 
   defp loop(game) do
     IO.write [
-      clear_screen,
+      clear_screen(),
       render(game)
     ]
     move(game)
